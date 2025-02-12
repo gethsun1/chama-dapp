@@ -6,10 +6,10 @@ import Home from "./components/Home";
 import CreateChama from "./components/CreateChama";
 import JoinChama from "./components/JoinChama";
 import Dashboard from "./components/Dashboard";
+import backgroundImage from "./assets/background.svg"; // Importing background.svg directly
 
 // Custom theme colors
 const PRIMARY_COLOR = "#6c4629";
-const BACKGROUND_IMAGE = "/assets/background.svg"; // Ensure this path is correct
 
 const Navbar = memo(() => (
   <AppBar position="sticky" sx={{ backgroundColor: PRIMARY_COLOR }}>
@@ -43,7 +43,7 @@ const App = () => {
       <Navbar />
 
       {/* Parallax Background */}
-      <Parallax bgImage={BACKGROUND_IMAGE} strength={500} style={{ minHeight: "100vh" }}>
+      <Parallax bgImage={backgroundImage} strength={500} style={{ minHeight: "100vh" }}>
         <Box
           sx={{
             minHeight: "100vh",
