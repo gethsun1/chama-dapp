@@ -1,13 +1,11 @@
 import React, { memo } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AppBar, Toolbar, Typography, Button, Container, CssBaseline, Box } from "@mui/material";
 import Home from "./components/Home";
 import CreateChama from "./components/CreateChama";
 import JoinChama from "./components/JoinChama";
 import Dashboard from "./components/Dashboard";
 import backgroundImage from "./assets/background.svg"; 
-
-
 
 const PRIMARY_COLOR_TRANSPARENT = "rgba(108,70,41,0.8)";
 
@@ -30,7 +28,7 @@ const Navbar = memo(() => (
       {/* Navigation */}
       <Box sx={{ display: "flex", gap: 2 }}>
         {["Home", "Create", "Join", "Dashboard"].map((text, index) => (
-          <Button key={index} href={`/${text.toLowerCase()}`} sx={{ color: "#fff" }}>
+          <Button key={index} component="a" href={`/${text.toLowerCase()}`} sx={{ color: "#fff" }}>
             {text}
           </Button>
         ))}
@@ -41,7 +39,8 @@ const Navbar = memo(() => (
 
 const App = () => {
   return (
-    <Router>
+    // Using BrowserRouter with basename so that routes work with your GitHub Pages URL
+    <BrowserRouter basename={process.env.PUBLIC_URL}>
       <CssBaseline />
       {/* Global fixed background image */}
       <Box
@@ -72,7 +71,7 @@ const App = () => {
           </Routes>
         </Container>
       </Box>
-    </Router>
+    </BrowserRouter>
   );
 };
 
