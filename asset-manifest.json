@@ -1,11 +1,11 @@
 {
   "files": {
-    "main.js": "/chama-dapp/static/js/main.1f82c015.js",
+    "main.js": "/chama-dapp/static/js/main.db8c3231.js",
     "static/media/background.svg": "/chama-dapp/static/media/background.10579ad7ab59023a87bb307c46be14b2.svg",
     "index.html": "/chama-dapp/index.html",
-    "main.1f82c015.js.map": "/chama-dapp/static/js/main.1f82c015.js.map"
+    "main.db8c3231.js.map": "/chama-dapp/static/js/main.db8c3231.js.map"
   },
   "entrypoints": [
-    "static/js/main.1f82c015.js"
+    "static/js/main.db8c3231.js"
   ]
 }
