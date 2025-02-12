@@ -5,12 +5,20 @@ import Home from "./components/Home";
 import CreateChama from "./components/CreateChama";
 import JoinChama from "./components/JoinChama";
 import Dashboard from "./components/Dashboard";
-import backgroundImage from "./assets/background.svg";
+import backgroundImage from "./assets/background.svg"; 
 
-const PRIMARY_COLOR = "#6c4629";
+
+
+const PRIMARY_COLOR_TRANSPARENT = "rgba(108,70,41,0.8)";
 
 const Navbar = memo(() => (
-  <AppBar position="sticky" sx={{ backgroundColor: PRIMARY_COLOR }}>
+  <AppBar
+    position="sticky"
+    sx={{
+      backgroundColor: PRIMARY_COLOR_TRANSPARENT,
+      backdropFilter: "blur(5px)",
+    }}
+  >
     <Toolbar>
       <Typography
         variant="h6"
@@ -54,6 +62,7 @@ const App = () => {
       {/* App content */}
       <Box sx={{ position: "relative", zIndex: 1 }}>
         <Navbar />
+        {/* App main content */}
         <Container sx={{ mt: 4, p: 3 }}>
           <Routes>
             <Route path="/" element={<Home />} />

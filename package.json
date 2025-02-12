@@ -12,7 +12,8 @@
     "react-dom": "^19.0.0",
     "react-parallax": "^3.5.1",
     "react-router-dom": "^7.1.5",
-    "react-scripts": "5.0.1"
+    "react-scripts": "5.0.1",
+    "web3modal": "^1.9.12"
   },
   "scripts": {
     "start": "react-scripts start",
