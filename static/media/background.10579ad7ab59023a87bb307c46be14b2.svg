@@ -1,0 +1,46 @@
+<svg width="1920" height="1080" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Gradient Definition -->
+    <linearGradient id="bgGradient" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0A2342" />
+      <stop offset="100%" stop-color="#3AAFA9" />
+    </linearGradient>
+    <!-- Styles for Lines and Shapes -->
+    <style>
+      .network-line {
+         stroke: rgba(255, 255, 255, 0.2);
+         stroke-width: 2;
+         stroke-linecap: round;
+      }
+      .circle {
+         fill: rgba(255, 255, 255, 0.1);
+      }
+      .icon {
+         fill: rgba(255, 255, 255, 0.05);
+         font-family: sans-serif;
+         font-size: 200px;
+         text-anchor: middle;
+      }
+    </style>
+  </defs>
+  
+  <!-- Background Gradient -->
+  <rect width="100%" height="100%" fill="url(#bgGradient)" />
+  
+  <!-- Abstract Network Lines -->
+  <line x1="100" y1="200" x2="400" y2="350" class="network-line" />
+  <line x1="300" y1="50" x2="800" y2="200" class="network-line" />
+  <line x1="600" y1="400" x2="1200" y2="300" class="network-line" />
+  <line x1="900" y1="100" x2="1400" y2="500" class="network-line" />
+  <line x1="200" y1="800" x2="700" y2="700" class="network-line" />
+  <line x1="1000" y1="600" x2="1600" y2="400" class="network-line" />
+  
+  <!-- Subtle Geometric Shapes -->
+  <circle cx="150" cy="150" r="50" class="circle" />
+  <circle cx="400" cy="900" r="70" class="circle" />
+  <circle cx="1700" cy="300" r="40" class="circle" />
+  <circle cx="1200" cy="800" r="60" class="circle" />
+  <circle cx="800" cy="500" r="30" class="circle" />
+  <text x="50%" y="50%" class="icon" dominant-baseline="middle">$</text>
+  -->
+</svg>
