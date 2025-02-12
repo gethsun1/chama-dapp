@@ -1,14 +1,12 @@
 import React, { memo } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { Parallax } from "react-parallax";
 import { AppBar, Toolbar, Typography, Button, Container, CssBaseline, Box } from "@mui/material";
 import Home from "./components/Home";
 import CreateChama from "./components/CreateChama";
 import JoinChama from "./components/JoinChama";
 import Dashboard from "./components/Dashboard";
-import backgroundImage from "./assets/background.svg"; // Importing background.svg directly
+import backgroundImage from "./assets/background.svg";
 
-// Custom theme colors
 const PRIMARY_COLOR = "#6c4629";
 
 const Navbar = memo(() => (
@@ -36,39 +34,35 @@ const Navbar = memo(() => (
 const App = () => {
   return (
     <Router>
-      {/* Global styles reset */}
       <CssBaseline />
-
-      {/* Navbar */}
-      <Navbar />
-
-      {/* Parallax Background */}
-      <Parallax bgImage={backgroundImage} strength={500} style={{ minHeight: "100vh" }}>
-        <Box
-          sx={{
-            minHeight: "100vh",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            textAlign: "center",
-          }}
-        >
-          <Typography variant="h2" sx={{ color: "#fff", fontWeight: "bold", textShadow: "2px 2px 5px rgba(0,0,0,0.7)" }}>
-            Welcome to Chama DApp
-          </Typography>
-        </Box>
-      </Parallax>
-
-      {/* Main Content */}
-      <Container sx={{ mt: 4, backgroundColor: "rgba(255,255,255,0.9)", p: 3, borderRadius: 2 }}>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/create" element={<CreateChama />} />
-          <Route path="/join" element={<JoinChama />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-        </Routes>
-      </Container>
+      {/* Global fixed background image */}
+      <Box
+        sx={{
+          backgroundImage: `url(${backgroundImage})`,
+          backgroundRepeat: "no-repeat",
+          backgroundAttachment: "fixed",
+          backgroundPosition: "center",
+          backgroundSize: "cover",
+          position: "fixed",
+          top: 0,
+          left: 0,
+          width: "100%",
+          height: "100%",
+          zIndex: -1,
+        }}
+      />
+      {/* App content */}
+      <Box sx={{ position: "relative", zIndex: 1 }}>
+        <Navbar />
+        <Container sx={{ mt: 4, p: 3 }}>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/create" element={<CreateChama />} />
+            <Route path="/join" element={<JoinChama />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+          </Routes>
+        </Container>
+      </Box>
     </Router>
   );
 };

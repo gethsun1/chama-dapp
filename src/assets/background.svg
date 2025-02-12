@@ -41,9 +41,6 @@
   <circle cx="1700" cy="300" r="40" class="circle" />
   <circle cx="1200" cy="800" r="60" class="circle" />
   <circle cx="800" cy="500" r="30" class="circle" />
-  
-  <!-- Optional Faded Iconography (Uncomment if desired) -->
-  <!--
   <text x="50%" y="50%" class="icon" dominant-baseline="middle">$</text>
   -->
 </svg>
