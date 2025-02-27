@@ -1,13 +1,19 @@
 
 # Chama Dapp
 
-![Chama Dapp Header](https://ibb.co/C5gP1FtN)
+![Chama Dapp Header](https://i.ibb.co/C5gP1FtN/chama-dapp-header.png)
+
+[![React](https://img.shields.io/badge/React-18.2.0-blue)](https://reactjs.org/)  
+[![Vite](https://img.shields.io/badge/Vite-4.0.0-blue)](https://vitejs.dev/)  
+[![Material UI](https://img.shields.io/badge/Material%20UI-v5-blue)](https://mui.com/)  
+[![Solidity](https://img.shields.io/badge/Solidity-0.8.0-blue)](https://soliditylang.org/)  
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 ---
 
 ## Overview
 
-Chama Dapp is a decentralized savings platform built on blockchain technology that empowers users to create, join, and manage group savings (Chamas) in a transparent and secure manner. Utilizing smart contracts on the Scroll Sepolia Testnet, Chama Dapp automates contributions, payouts, and membership tracking, revolutionizing the traditional group savings model.
+Chama Dapp is a decentralized savings platform built on blockchain technology that empowers users to create, join, and manage group savings (Chamas) in a transparent and secure manner. Utilizing smart contracts on the Scroll Sepolia Testnet, Chama Dapp automates contributions, payouts, and membership tracking—revolutionizing the traditional group savings model.
 
 ---
 
@@ -17,10 +23,10 @@ Chama Dapp is a decentralized savings platform built on blockchain technology th
   Launch your decentralized savings group with customizable parameters such as deposit amount, recurring contributions, penalty rates, maximum members, and contribution cycle duration.
 
 - **Join a Chama:**  
-  Discover and join active Chamas by sending the required deposit. Experience automated on-chain membership verification and transparent contribution tracking.
+  Discover and join active Chamas by sending the required deposit. Enjoy automated on-chain membership verification and transparent contribution tracking.
 
 - **Automated Contributions & Payouts:**  
-  Members contribute according to the defined schedule and receive payouts automatically in a round-robin fashion once the group is complete.
+  Members contribute according to a defined schedule and receive payouts automatically in a round-robin fashion once the group is complete.
 
 - **Dashboard & Analytics:**  
   Real-time on-chain data is displayed on the Dashboard, providing insights into your savings, contributions, and upcoming payouts.
@@ -32,9 +38,7 @@ Chama Dapp is a decentralized savings platform built on blockchain technology th
 
 ## Live App
 
-- **Live App:** [https://chama-dapp.vercel.app/](#)
-
-
+- **Live App:** [https://chama-dapp.vercel.app/](https://chama-dapp.vercel.app/)
 
 ---
 
@@ -140,8 +144,9 @@ This project is licensed under the MIT License.
 
 Contact
 
-For further inquiries or support, please contact Gethsun at gethsun09@gmail.com
+For further inquiries or support, please contact Gethsun at gethsun09@gmail.com.
+
 
 ---
 
-Chama Dapp is committed to revolutionizing group savings through transparency, security, and user empowerment on the blockchain
+Chama Dapp is committed to revolutionizing group savings through transparency, security, and user empowerment on the blockchain.
