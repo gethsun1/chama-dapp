@@ -1,7 +1,7 @@
 
 # Chama Dapp
 
-![Chama Dapp Header](https://i.ibb.co/C5gP1FtN/chama-dapp-header.png)
+[![IMG-20250302-WA0000.jpg](https://i.postimg.cc/2y86kqFL/IMG-20250302-WA0000.jpg)](https://postimg.cc/0MFxZy49)
 
 [![React](https://img.shields.io/badge/React-18.2.0-blue)](https://reactjs.org/)  
 [![Vite](https://img.shields.io/badge/Vite-4.0.0-blue)](https://vitejs.dev/)  
