@@ -55,7 +55,7 @@ Chama Dapp is a decentralized savings platform built on blockchain technology th
 1. **Clone the Repository:**
 
    ```bash
-   git clone https://github.com/yourusername/chama-dapp.git
+   git clone [https://github.com/yourusername/chama-dapp.git](https://github.com/gethsun1/chama-dapp)
    cd chama-dapp
 
 2. Install Dependencies:
