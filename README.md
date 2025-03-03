@@ -79,7 +79,7 @@ Chama Dapp is a decentralized savings platform built on blockchain technology th
 
 ---
 
-Smart Contract
+## Smart Contract
 
 The core of Chama Dapp is the ChamaFactory smart contract, which manages the creation of Chamas, joining, contributions, and payouts. Key functionalities include:
 
@@ -99,7 +99,7 @@ The smart contract is written in Solidity (v0.8.0) and deployed on the Scroll Se
 
 ---
 
-Technologies Used
+## Technologies Used
 
 Frontend:
 
@@ -130,21 +130,21 @@ Hardhat / Remix
 
 ---
 
-Contributing
+## Contributing
 
 Contributions are welcome! Please fork the repository and submit a pull request. For major changes, open an issue first to discuss your ideas.
 
 
 ---
 
-License
+## License
 
 This project is licensed under the MIT License.
 
 
 ---
 
-Contact
+## Contact
 
 For further inquiries or support, please contact Gethsun at gethsun09@gmail.com.
 
