@@ -59,11 +59,12 @@ Chama Dapp is a decentralized savings platform built on blockchain technology th
    cd chama-dapp
 
 2. Install Dependencies:
-        ```bash
-     yarn install
+
+   ```bash
+ yarn install
 
 
-3. Run the Development Server:
+4. Run the Development Server:
    
 
 yarn dev
