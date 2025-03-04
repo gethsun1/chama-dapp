@@ -33,6 +33,7 @@ contract ChamaFactory {
         uint256 contributionAmount;    // Recurring contribution per cycle
         uint256 penalty;               // Penalty percentage for missing contributions
         uint256 maxMembers;            // Maximum number of members allowed
+        uint256 public membersCount;   // Total number of members in a Chama count 
         uint256 cycleDuration;         // Duration of each contribution cycle (in seconds)
         address[] members;             // Array of member addresses
         uint256 currentRound;          // 1-indexed pointer to the member scheduled for payout
@@ -101,15 +102,19 @@ contract ChamaFactory {
      * - The sender must send exactly the required deposit amount in ETH.
      */
     function joinChama(uint256 _chamaId) external payable {
-        Chama storage chama = chamas[_chamaId];
-        require(chama.isActive, "Chama is not active");
-        require(chama.members.length < chama.maxMembers, "Chama is full");
-        require(msg.value == chama.depositAmount, "Incorrect deposit amount");
-
-        chama.members.push(msg.sender);
-        emit JoinedChama(_chamaId, msg.sender);
+      Chama storage chama = chamas[_chamaId];
+      require(chama.isActive, "Chama is not active");
+      require(chama.membersCount < chama.maxMembers, "Chama is full");
+      require(msg.value == chama.depositAmount, "Incorrect deposit amount");
+    
+      chama.members.push(msg.sender);
+      chama.membersCount++;
+      emit JoinedChama(_chamaId, msg.sender);
     }
 
+    function getMembersCount(uint256 _chamaId) public view returns (uint256) {
+      return chamas[_chamaId].membersCount;
+    }
     /**
      * @notice Allows a member to make a scheduled contribution.
      * @param _chamaId The ID of the Chama to which the contribution is made.
