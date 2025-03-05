@@ -96,7 +96,7 @@ The heart of Chama Dapp is the ChamaFactory smart contract, which orchestrates t
   
 - ➤ **isMember:** Verifies membership of an address within a specific Chama.
 
-The smart contract is developed in Solidity (v0.8.0) and is deployed on the Scroll Sepolia Testnet, utilizing Scroll ZKP for improved privacy and efficiency.
+The smart contract is developed in Solidity (v0.8.26) and is deployed on the Scroll Sepolia Testnet, utilizing Scroll ZKP for improved privacy and efficiency.
 
 
 ---
