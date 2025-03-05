@@ -1,24 +1,23 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.26;
+
+import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 
 /**
  * @title ChamaFactory
- * @dev A decentralized savings system (Chama) factory that allows users to create,
- * join, contribute to, and receive payouts from group savings.
+ * @dev A decentralized savings system (Chama) factory implementing a ROCSA-based group savings model.
+ * This version penalizes members who default on their contributions by slashing a percentage of their deposit,
+ * with the collected penalties added to the payout for the scheduled recipient.
  *
  * Features:
- * - Create a Chama with specific parameters (name, description, deposit amount,
- *   contribution amount, penalty percentage, maximum members, and cycle duration).
- * - Allow users to join a Chama by sending the exact required deposit.
- * - Enable members to contribute the scheduled amount per cycle.
- * - Execute payouts to members in a round-robin fashion once the Chama is full.
- * - Provide on-chain data tracking for user participation and contributions.
- *
- * Note: This is a simplified example. For a production system, consider enhanced
- * contribution tracking, secure payout mechanisms, and robust handling of missed
- * contributions or penalties.
+ *  - Creation of a Chama with specific parameters.
+ *  - Member enrollment with duplicate membership prevention.
+ *  - Cycle-based contribution tracking with time-bound contribution windows.
+ *  - Automatic penalty enforcement for defaulting members.
+ *  - Round-robin payout execution that aggregates contributions and penalties.
+ *  - Reentrancy protection during payout operations.
  */
-contract ChamaFactory {
+contract ChamaFactory is ReentrancyGuard {
     uint256 public chamaCount; // Total number of Chamas created
 
     /**
@@ -29,25 +28,31 @@ contract ChamaFactory {
         address creator;               // Address of the creator
         string name;                   // Name of the Chama
         string description;            // Description and goals
-        uint256 depositAmount;         // Initial deposit required to join
+        uint256 depositAmount;         // Initial deposit required to join (serves as collateral)
         uint256 contributionAmount;    // Recurring contribution per cycle
-        uint256 penalty;               // Penalty percentage for missing contributions
+        uint256 penalty;               // Penalty percentage (e.g., 10 for 10%)
         uint256 maxMembers;            // Maximum number of members allowed
-        uint256 membersCount;   // Total number of members in a Chama count 
+        uint256 membersCount;          // Current number of members in the Chama
         uint256 cycleDuration;         // Duration of each contribution cycle (in seconds)
+        uint256 currentRound;          // Pointer to the member scheduled for payout (1-indexed)
+        uint256 currentCycle;          // Current contribution cycle number
+        uint256 nextCycleStart;        // Timestamp for the start of the next cycle
         address[] members;             // Array of member addresses
-        uint256 currentRound;          // 1-indexed pointer to the member scheduled for payout
-        bool isActive;                 // Status flag indicating if the Chama is active
+        bool isActive;                 // Indicates if the Chama is active
     }
 
     // Mapping of Chama ID to Chama details
     mapping(uint256 => Chama) public chamas;
+    // Mapping to track contributions: chamaId => cycle => member => contribution status
+    mapping(uint256 => mapping(uint256 => mapping(address => bool))) public contributions;
+    // Mapping to track member deposits for each Chama: chamaId => member => deposit balance
+    mapping(uint256 => mapping(address => uint256)) public memberDeposit;
 
     // Events to log key actions
     event ChamaCreated(uint256 indexed chamaId, string name, address indexed creator);
     event JoinedChama(uint256 indexed chamaId, address indexed member);
-    event ContributionMade(uint256 indexed chamaId, address indexed member, uint256 amount);
-    event PayoutExecuted(uint256 indexed chamaId, address indexed recipient);
+    event ContributionMade(uint256 indexed chamaId, uint256 cycle, address indexed member, uint256 amount);
+    event PayoutExecuted(uint256 indexed chamaId, uint256 cycle, address indexed recipient, uint256 totalPayout);
 
     /**
      * @notice Creates a new Chama.
@@ -61,7 +66,7 @@ contract ChamaFactory {
      * @return The unique ID of the newly created Chama.
      *
      * Requirements:
-     * - `_maxMembers` must be greater than 0.
+     * - `_maxMembers`, `_depositAmount`, and `_contributionAmount` must be greater than 0.
      */
     function createChama(
         string memory _name,
@@ -73,6 +78,8 @@ contract ChamaFactory {
         uint256 _cycleDuration
     ) external returns (uint256) {
         require(_maxMembers > 0, "Max members must be > 0");
+        require(_depositAmount > 0, "Deposit amount must be > 0");
+        require(_contributionAmount > 0, "Contribution amount must be > 0");
 
         chamaCount++;
         Chama storage newChama = chamas[chamaCount];
@@ -86,6 +93,8 @@ contract ChamaFactory {
         newChama.maxMembers = _maxMembers;
         newChama.cycleDuration = _cycleDuration;
         newChama.currentRound = 1;
+        newChama.currentCycle = 1;
+        newChama.nextCycleStart = block.timestamp + _cycleDuration;
         newChama.isActive = true;
 
         emit ChamaCreated(chamaCount, _name, msg.sender);
@@ -97,74 +106,105 @@ contract ChamaFactory {
      * @param _chamaId The ID of the Chama to join.
      *
      * Requirements:
-     * - The Chama must be active.
-     * - The Chama must not be full.
-     * - The sender must send exactly the required deposit amount in ETH.
+     * - The Chama must be active and not full.
+     * - The sender must not already be a member.
+     * - The exact deposit amount in ETH must be sent.
      */
-
     function joinChama(uint256 _chamaId) external payable {
         Chama storage chama = chamas[_chamaId];
         require(chama.isActive, "Chama is not active");
         require(chama.membersCount < chama.maxMembers, "Chama is full");
         require(msg.value == chama.depositAmount, "Incorrect deposit amount");
-        
+        require(!isMember(_chamaId, msg.sender), "Already a member");
+
         chama.members.push(msg.sender);
-        chama.membersCount++;  
+        chama.membersCount++;
+        // Record the member's deposit (collateral)
+        memberDeposit[_chamaId][msg.sender] = chama.depositAmount;
         emit JoinedChama(_chamaId, msg.sender);
     }
 
-
-    function getMembersCount(uint256 _chamaId) public view returns (uint256) {
-      return chamas[_chamaId].membersCount;
-    }
     /**
-     * @notice Allows a member to make a scheduled contribution.
-     * @param _chamaId The ID of the Chama to which the contribution is made.
+     * @notice Allows a member to make a scheduled contribution for the current cycle.
+     * @param _chamaId The ID of the Chama.
      *
      * Requirements:
      * - The Chama must be active.
-     * - The sender must be a member of the Chama.
-     * - The sent ETH must match the scheduled contribution amount.
+     * - The sender must be a member.
+     * - The exact contribution amount in ETH must be sent.
+     * - Contributions must be made before the current cycle ends.
+     * - A member may only contribute once per cycle.
      */
     function contribute(uint256 _chamaId) external payable {
         Chama storage chama = chamas[_chamaId];
         require(chama.isActive, "Chama is not active");
         require(isMember(_chamaId, msg.sender), "Not a member of this Chama");
         require(msg.value == chama.contributionAmount, "Incorrect contribution amount");
+        require(block.timestamp < chama.nextCycleStart, "Contribution period over for current cycle");
+        require(!contributions[_chamaId][chama.currentCycle][msg.sender], "Contribution already made for current cycle");
 
-        // Additional tracking of individual contributions could be implemented here.
-
-        emit ContributionMade(_chamaId, msg.sender, msg.value);
+        contributions[_chamaId][chama.currentCycle][msg.sender] = true;
+        emit ContributionMade(_chamaId, chama.currentCycle, msg.sender, msg.value);
     }
 
     /**
-     * @notice Executes a payout for the current contribution round.
+     * @dev Internal function to calculate the total pool for the current cycle.
+     * Iterates over all members to sum contributions and apply penalties for defaults.
+     * @param _chamaId The ID of the Chama.
+     * @return totalPool The total pooled amount for the cycle.
+     */
+    function _calculateTotalPool(uint256 _chamaId) internal returns (uint256 totalPool) {
+        Chama storage chama = chamas[_chamaId];
+        uint256 penaltyAmount;
+        for (uint256 i = 0; i < chama.members.length; i++) {
+            address member = chama.members[i];
+            if (contributions[_chamaId][chama.currentCycle][member]) {
+                totalPool += chama.contributionAmount;
+            } else {
+                penaltyAmount = (chama.depositAmount * chama.penalty) / 100;
+                require(memberDeposit[_chamaId][member] >= penaltyAmount, "Insufficient deposit for penalty");
+                memberDeposit[_chamaId][member] -= penaltyAmount;
+                totalPool += penaltyAmount;
+            }
+        }
+    }
+
+    /**
+     * @notice Executes a payout for the current cycle.
      *
-     * This function transfers the pooled contribution from all members
-     * to the member scheduled for payout in a round-robin manner and then advances
-     * the current round pointer.
+     * This function collects contributions from members who contributed and deducts a penalty
+     * from defaulting members’ deposits. The total pool (contributions plus penalties) is then
+     * transferred to the scheduled recipient in a round-robin manner. After payout, the cycle
+     * is advanced.
      *
      * Requirements:
-     * - The Chama must be active.
-     * - The Chama must be full (i.e., all spots are filled).
+     * - The Chama must be active and full.
+     * - The contribution period for the current cycle must have ended.
      */
-    function payout(uint256 _chamaId) external {
+    function payout(uint256 _chamaId) external nonReentrant {
         Chama storage chama = chamas[_chamaId];
         require(chama.isActive, "Chama is not active");
+        require(block.timestamp >= chama.nextCycleStart, "Current cycle not ended yet");
         require(chama.members.length == chama.maxMembers, "Chama is not full yet");
+
+        // Calculate the total pool via the helper function
+        uint256 totalPool = _calculateTotalPool(_chamaId);
 
         // Determine the payout recipient based on the current round (1-indexed)
         address recipient = chama.members[chama.currentRound - 1];
-        uint256 payoutAmount = chama.contributionAmount * chama.maxMembers;
 
-        // Update the round pointer (circular round-robin)
+        // Update the round pointer in a circular round-robin fashion
         chama.currentRound = (chama.currentRound % chama.maxMembers) + 1;
 
-        // Transfer the total pooled contributions to the recipient
-        (bool sent, ) = recipient.call{value: payoutAmount}("");
+        // Store the current cycle for event logging and advance the cycle
+        uint256 executedCycle = chama.currentCycle;
+        chama.currentCycle++;
+        chama.nextCycleStart = block.timestamp + chama.cycleDuration;
+
+        (bool sent, ) = recipient.call{value: totalPool}("");
         require(sent, "Payout failed");
 
-        emit PayoutExecuted(_chamaId, recipient);
+        emit PayoutExecuted(_chamaId, executedCycle, recipient, totalPool);
     }
 
     /**
