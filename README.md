@@ -67,19 +67,20 @@ Built on the Scroll Sepolia Testnet and leveraging **Scroll Zero-Knowledge Proof
    git clone https://github.com/gethsun1/chama-dapp
    cd chama-dapp
 
-2. Install Dependencies:
-
-yarn install
-
-
-3. Run the Development Server:
-
-yarn dev
+2. **Install Dependencies:**
+   ```
+   yarn install
 
 
-4. Build for Production:
+3. **Run the Development Server:**
+   
+   ```
+   yarn dev
 
-yarn build
+
+5. **Build for Production:**
+   ```
+   yarn build
 
 
 
