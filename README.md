@@ -63,7 +63,7 @@ Built on the Scroll Sepolia Testnet and leveraging **Scroll Zero-Knowledge Proof
 
 1. **Clone the Repository:**
 
-   ```bash
+   ```
    git clone https://github.com/gethsun1/chama-dapp
    cd chama-dapp
 
@@ -71,12 +71,9 @@ Built on the Scroll Sepolia Testnet and leveraging **Scroll Zero-Knowledge Proof
    ```
    yarn install
 
-
 3. **Run the Development Server:**
-   
-   ```
+    ```
    yarn dev
-
 
 5. **Build for Production:**
    ```
