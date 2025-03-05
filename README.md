@@ -80,8 +80,6 @@ Built on the Scroll Sepolia Testnet and leveraging **Scroll Zero-Knowledge Proof
    yarn build
 
 
-
-
 ---
 
 ## Smart Contract
