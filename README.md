@@ -7,7 +7,7 @@
 [![React](https://img.shields.io/badge/React-18.2.0-blue)](https://reactjs.org/)  
 [![Vite](https://img.shields.io/badge/Vite-4.0.0-blue)](https://vitejs.dev/)  
 [![Material UI](https://img.shields.io/badge/Material%20UI-v5-blue)](https://mui.com/)  
-[![Solidity](https://img.shields.io/badge/Solidity-0.8.0-blue)](https://soliditylang.org/)  
+[![Solidity](https://img.shields.io/badge/Solidity-0.8.26-blue)](https://soliditylang.org/)  
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 ----
