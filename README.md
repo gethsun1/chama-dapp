@@ -103,7 +103,7 @@ The smart contract is developed in Solidity (v0.8.26) and is deployed on the Scr
 
 ## Technologies Used
 
-   ### -Frontend:
+  - ### Frontend:
 
        React.js
 
@@ -114,7 +114,7 @@ The smart contract is developed in Solidity (v0.8.26) and is deployed on the Scr
        React Router
 
 
-   ### -Blockchain:
+  - ### -Blockchain:
 
          Solidity
 
