@@ -17,15 +17,18 @@ import {
 } from "@mui/material";
 import { MonetizationOn, Groups, CalendarToday } from "@mui/icons-material";
 import { useReadContract, useReadContracts, useWriteContract } from "wagmi";
+import { formatUnits, parseUnits } from "viem";
 import ChamaFactoryABI from "../contracts/ChamaFactoryABI.json";
 
 const contractAddress = "0x154d1E286A9A3c1d4B1e853A9a7e61b1e934B756";
 
-// Generic safe conversion: returns an empty string if null/undefined,
-// otherwise returns val.toString() if available.
+// Improved safe conversion: if the value is null/undefined returns empty string;
+// if it's a bigint, return its string representation; otherwise, use toString().
 const safeConvert = (val) => {
   if (val === null || val === undefined) return "";
-  return typeof val.toString === "function" ? val.toString() : val;
+  if (typeof val === "bigint") return val.toString();
+  if (typeof val.toString === "function") return val.toString();
+  return val;
 };
 
 // Helper function to format cycle duration
@@ -37,14 +40,26 @@ const formatCycleDuration = (duration) => {
   return `${d}`; // fallback: display the number as a string
 };
 
-// Robust formatter for a Chama item: expects an array of 14 values.
+// Helper function to convert a Wei value (as a bigint or string) to ETH using viem
+const convertWeiToEth = (weiValue) => {
+  try {
+    const bn = typeof weiValue === "bigint" ? weiValue : BigInt(safeConvert(weiValue));
+    return formatUnits(bn, "ether");
+  } catch (error) {
+    console.error("Conversion error:", error);
+    return safeConvert(weiValue);
+  }
+};
+
+// Formatter for a Chama item: expects an array of 14 values (from the "result" property)
 const formatChama = (chamaArray) => ({
   id: parseInt(safeConvert(chamaArray[0])),
   creator: safeConvert(chamaArray[1]),
   name: safeConvert(chamaArray[2]),
   description: safeConvert(chamaArray[3]),
-  depositAmount: safeConvert(chamaArray[4]),
-  contributionAmount: safeConvert(chamaArray[5]),
+  // Convert deposit and contribution amounts from Wei to ETH:
+  depositAmount: convertWeiToEth(chamaArray[4]),
+  contributionAmount: convertWeiToEth(chamaArray[5]),
   penalty: safeConvert(chamaArray[6]),
   maxMembers: safeConvert(chamaArray[7]),
   membersCount: safeConvert(chamaArray[8]),
@@ -86,13 +101,12 @@ const JoinChama = () => {
     watch: true,
   });
 
-  // Log the raw data for debugging
+  // Log raw data for debugging
   useEffect(() => {
     console.log("Raw Chamas:", rawChamas);
   }, [rawChamas]);
 
-  // Format the raw chamas:
-  // Each item in rawChamas is an object with a "result" property containing the array of values.
+  // Format the raw chamas: each item has a "result" property containing the array of values.
   const chamas =
     rawChamas && Array.isArray(rawChamas)
       ? rawChamas.map((item) => formatChama(item.result))
@@ -104,9 +118,11 @@ const JoinChama = () => {
     abi: ChamaFactoryABI,
     functionName: "joinChama",
     args: [selectedChama ? selectedChama.id : 0],
+    // When sending a join transaction, convert the ETH value back to Wei using viem's parseUnits.
     overrides: {
-      // Ensure depositAmount is passed as the value (already a string from safeConvert)
-      value: selectedChama ? selectedChama.depositAmount : undefined,
+      value: selectedChama
+        ? parseUnits(selectedChama.depositAmount, "ether")
+        : undefined,
     },
     onError(error) {
       console.error("Join error:", error);
@@ -172,12 +188,12 @@ const JoinChama = () => {
                   <Box display="flex" alignItems="center" gap={1} sx={{ mb: 1 }}>
                     <MonetizationOn fontSize="small" color="action" />
                     <Typography variant="body2">
-                      Deposit: {chama.depositAmount}
+                      Deposit: {chama.depositAmount} ETH
                     </Typography>
                   </Box>
                   <Box sx={{ mb: 1 }}>
                     <Typography variant="body2">
-                      Contribution: {chama.contributionAmount}
+                      Contribution: {chama.contributionAmount} ETH
                     </Typography>
                   </Box>
                   <Box sx={{ mb: 1 }}>
@@ -239,7 +255,7 @@ const JoinChama = () => {
                   Deposit Amount:
                 </Typography>
                 <Typography variant="body2">
-                  {selectedChama?.depositAmount}
+                  {selectedChama?.depositAmount} ETH
                 </Typography>
               </Box>
               <Box sx={{ mt: 2 }}>
@@ -247,7 +263,7 @@ const JoinChama = () => {
                   Contribution Amount:
                 </Typography>
                 <Typography variant="body2">
-                  {selectedChama?.contributionAmount}
+                  {selectedChama?.contributionAmount} ETH
                 </Typography>
               </Box>
               <Box sx={{ mt: 2 }}>
