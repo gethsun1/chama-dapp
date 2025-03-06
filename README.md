@@ -103,25 +103,16 @@ The smart contract is developed in Solidity (v0.8.26) and is deployed on the Scr
 
 ## Technologies Used
 
-  ### Frontend:
+### **Frontend:**
+   - React.js  
+   - Vite  
+   - Material UI  
+   - React Router  
 
-       React.js
-
-       Vite
-
-       Material UI
-
-       React Router
-
-
-  ### Blockchain:
-
-        Solidity
-
-        Scroll Sepolia Testnet (with Scroll ZKP)
-
-        Wagmi / viem
-
+### **Blockchain:**
+   - Solidity  
+   - Scroll Sepolia Testnet (with Scroll ZKP)  
+   - Wagmi / viem
 
 ## Wallet & Integration:
 
