@@ -113,6 +113,7 @@ The smart contract is developed in Solidity (v0.8.26) and is deployed on the Scr
    - Solidity  
    - Scroll Sepolia Testnet (with Scroll ZKP)  
    - Wagmi / viem
+   - Reown AppKit 
 
 ## Wallet & Integration:
 
