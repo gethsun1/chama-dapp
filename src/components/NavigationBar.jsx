@@ -16,19 +16,11 @@ import {
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import { Link } from "react-router-dom";
-import { useAccount } from "wagmi";
 import ConnectButton from "../ConnectButton";
 
-const truncateAddress = (address) => {
-  if (!address) return "";
-  return address.slice(0, 6) + "..." + address.slice(-4);
-};
-
 const NavigationBar = () => {
-  const { address, isConnected } = useAccount();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
-
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   const toggleDrawer = (open) => () => {
@@ -48,7 +40,6 @@ const NavigationBar = () => {
         <Typography variant="h6" sx={{ flexGrow: 1 }}>
           Chama DApp
         </Typography>
-
         {isMobile ? (
           <>
             <IconButton
@@ -118,40 +109,10 @@ const NavigationBar = () => {
             </Button>
           ))
         )}
-
-        {isConnected ? (
-          <Button
-            variant="outlined"
-            sx={{
-              backgroundColor: "black",
-              color: "white",
-              border: "2px solid white",
-              "&:hover": { backgroundColor: "#333" },
-              borderRadius: "8px",
-              padding: "8px 16px",
-              textTransform: "none",
-              ml: 2,
-            }}
-          >
-            {truncateAddress(address)}
-          </Button>
-        ) : (
-          <Button
-            variant="outlined"
-            sx={{
-              backgroundColor: "black",
-              color: "white",
-              border: "2px solid white",
-              "&:hover": { backgroundColor: "#333" },
-              borderRadius: "8px",
-              padding: "8px 16px",
-              textTransform: "none",
-              ml: 2,
-            }}
-          >
-            <ConnectButton />
-          </Button>
-        )}
+        {/* Only render the Appkit ConnectButton; no additional button or truncation */}
+        <Box sx={{ ml: 2 }}>
+          <ConnectButton />
+        </Box>
       </Toolbar>
     </AppBar>
   );
