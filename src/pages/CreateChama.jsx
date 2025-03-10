@@ -17,12 +17,13 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { Add, Remove } from '@mui/icons-material';
-import { useAccount, useChainId, useWriteContract } from 'wagmi';
+import { useAccount, useChainId, useWalletClient } from 'wagmi';
+import { ethers } from 'ethers';
 import { parseUnits } from 'viem';
 import ChamaFactoryABI from '../contracts/ChamaFactoryABI.json';
 
 const contractAddress = "0x154d1E286A9A3c1d4B1e853A9a7e61b1e934B756";
-// Expected chain id for Scroll Sepolia Testnet
+// Expected chain id for Scroll Sepolia Testnet (adjust if needed)
 const EXPECTED_CHAIN_ID = 534351;
 
 const CreateChama = () => {
@@ -41,14 +42,16 @@ const CreateChama = () => {
   // Wallet and network hooks
   const { address, isConnected } = useAccount();
   const chainId = useChainId();
+  // We still use walletClient for any additional info if needed (not used for signer now)
+  const { data: walletClient } = useWalletClient();
 
-  // Debug logging wallet status
+  // Debug logging for wallet status
   useEffect(() => {
-    console.log("[DEBUG] Wallet Status:", { 
-      isConnected, 
-      chainId, 
+    console.log("[DEBUG] Wallet Status:", {
+      isConnected,
+      chainId,
       expectedChain: EXPECTED_CHAIN_ID,
-      address
+      address,
     });
   }, [isConnected, chainId, address]);
 
@@ -58,32 +61,7 @@ const CreateChama = () => {
     if (maxMembers > 1) setMaxMembers(prev => prev - 1);
   };
 
-  // Prepare the write contract hook for creating a Chama.
-  // Note the mode: 'recklesslyUnprepared' which forces initialization.
-  const { write: createChamaWrite, isLoading: createLoading, error } = useWriteContract({
-    mode: 'recklesslyUnprepared',
-    address: contractAddress,
-    abi: ChamaFactoryABI,
-    functionName: 'createChama',
-    mutation: {
-      onError: (error) => {
-        console.error("[TX ERROR]", error);
-        console.log("Error details:", {
-          cause: error.cause,
-          metaMessages: error.metaMessages,
-          details: error.details
-        });
-      },
-      onSuccess: (txHash) => {
-        console.log("[TX SUCCESS] Hash:", txHash);
-      },
-      onSettled: () => {
-        console.log("[TX SETTLED]");
-      }
-    },
-  });
-
-  // Helper function to map contribution cycle to seconds
+  // Helper function to map contribution cycle to duration in seconds
   const getCycleDuration = (cycle) => {
     const durations = {
       daily: 86400,
@@ -93,7 +71,7 @@ const CreateChama = () => {
     return durations[cycle.toLowerCase()] || 86400;
   };
 
-  // Handler for form submission
+  // Handler for form submission using ethers.js for contract interaction
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
@@ -129,24 +107,35 @@ const CreateChama = () => {
         maxMembers,
       });
 
-      // Ensure write function is available
-      if (!createChamaWrite) {
-        throw new Error("Write function not initialized");
+      // Get the signer using ethers BrowserProvider (ethers v6)
+      if (!window.ethereum) {
+        throw new Error("No window.ethereum object found");
+      }
+      const provider = new ethers.BrowserProvider(window.ethereum);
+      const signer = await provider.getSigner();
+      if (!signer) {
+        throw new Error("No signer available");
       }
 
-      createChamaWrite({
-        args: [
-          chamaName.trim(),
-          description.trim(),
-          depositInWei,
-          contributionInWei,
-          Math.round(penalty),
-          maxMembers,
-          getCycleDuration(contributionCycle),
-        ],
-      });
+      // Create an ethers Contract instance using the signer
+      const contract = new ethers.Contract(contractAddress, ChamaFactoryABI, signer);
+      const cycleDuration = getCycleDuration(contributionCycle);
+
+      // Call createChama on the contract
+      const tx = await contract.createChama(
+        chamaName.trim(),
+        description.trim(),
+        depositInWei,
+        contributionInWei,
+        Math.round(penalty),
+        maxMembers,
+        cycleDuration
+      );
+      console.log("[TX SENT] Hash:", tx.hash);
+      await tx.wait();
+      console.log("[TX CONFIRMED]");
     } catch (error) {
-      console.error("[VALIDATION ERROR]", error);
+      console.error("[ERROR]", error);
       alert(`Submission failed: ${error.message}`);
     }
   };
@@ -323,9 +312,9 @@ const CreateChama = () => {
                 color="primary"
                 sx={{ transition: 'all 0.3s ease', '&:hover': { transform: 'scale(1.02)' } }}
                 aria-label="Create Chama"
-                disabled={!isFormEnabled || createLoading}
+                disabled={!isFormEnabled}
               >
-                {createLoading ? "Creating..." : "Create Chama"}
+                Create Chama
               </Button>
             </Box>
           </Box>
