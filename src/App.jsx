@@ -2,6 +2,7 @@ import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Box } from "@mui/material";
 import NavigationBar from "./components/NavigationBar";
+import BreadcrumbNavigation from "./components/BreadcrumbNavigation";
 import LandingPage from "./components/LandingPage";
 import CreateChama from "./pages/CreateChama";
 import JoinChama from "./pages/JoinChama";
@@ -23,6 +24,7 @@ function App() {
           }}
         >
           <NavigationBar />
+          <BreadcrumbNavigation />
           <Box sx={{ flex: 1 }}>
             <Routes>
               <Route path="/" element={<LandingPage />} />
