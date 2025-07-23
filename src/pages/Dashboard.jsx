@@ -42,6 +42,8 @@ import useJoinedChamas from "../hooks/useJoinedChamas";
 import { BrowserProvider, formatUnits } from "ethers";
 import WalletConnectionGuard from "../components/WalletConnectionGuard";
 import { LoadingSpinner, MetricCardSkeleton } from "../components/LoadingState";
+import CommunicationHub from "../components/communication/CommunicationHub";
+import { useCommunication } from "../contexts/CommunicationContext";
 
 // MetricCard Component
 const MetricCard = ({
@@ -120,7 +122,10 @@ const Dashboard = () => {
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [walletBalance, setWalletBalance] = useState("Loading...");
   const [balanceLoading, setBalanceLoading] = useState(true);
+  const [selectedChamaForComm, setSelectedChamaForComm] = useState(null);
+  const [commHubOpen, setCommHubOpen] = useState(false);
   const joinedChamas = useJoinedChamas();
+  const { notifications } = useCommunication();
 
   // Contribution history sample data (for demo purposes)
   const contributionData = [
@@ -316,7 +321,14 @@ const Dashboard = () => {
                     {joinedChamas && joinedChamas.length > 0 ? (
                       <Stack spacing={2}>
                         {joinedChamas.map((chama) => (
-                          <ChamaCard key={chama.id} chama={chama} />
+                          <ChamaCard
+                            key={chama.id}
+                            chama={chama}
+                            onOpenCommunication={() => {
+                              setSelectedChamaForComm(chama);
+                              setCommHubOpen(true);
+                            }}
+                          />
                         ))}
                       </Stack>
                     ) : (
@@ -394,6 +406,22 @@ const Dashboard = () => {
             Address copied to clipboard!
           </Alert>
         </Snackbar>
+
+        {/* Communication Hub */}
+        {selectedChamaForComm && (
+          <CommunicationHub
+            chamaId={selectedChamaForComm.id}
+            chamaName={selectedChamaForComm.name}
+            members={selectedChamaForComm.members || []}
+            isCreator={selectedChamaForComm.creator === address}
+            open={commHubOpen}
+            onClose={() => {
+              setCommHubOpen(false);
+              setSelectedChamaForComm(null);
+            }}
+            variant="drawer"
+          />
+        )}
       </Container>
     </WalletConnectionGuard>
   );

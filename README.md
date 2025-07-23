@@ -28,6 +28,7 @@ Chama Dapp is a cutting-edge decentralized savings platform that transforms trad
 - **Performance Optimized**: React.memo optimizations and memoized calculations for faster rendering
 - **Smart Wallet Integration**: Enhanced wallet connection guards with network validation
 - **Real-time Status Indicators**: Visual status system for chamas, transactions, and network states
+- **🆕 Real-Time Communication Hub**: Comprehensive member communication system with chat, proposals, announcements, and coordination tools
 
 Our Dapp leverages blockchain technology deployed on the **Scroll Sepolia Testnet** (enhanced with Scroll Zero-Knowledge Proofs for scalability and privacy) to automate these processes, ensuring trustless, efficient, and democratic financial management.
 
@@ -49,6 +50,13 @@ Our Dapp leverages blockchain technology deployed on the **Scroll Sepolia Testne
 
 - **⚡ Automated Contributions & Payouts**
   Smart contract-powered automation handles contributions and payouts in a round-robin fashion. Penalties for defaults are automatically deducted from deposits and added to scheduled recipient payouts.
+
+- **💬 Real-Time Communication Hub**
+  Comprehensive member communication system featuring:
+  - **Real-time Chat**: Instant messaging with member presence indicators and message threading
+  - **Proposal Voting**: Democratic decision-making with visual vote tracking and deadline management
+  - **Announcement System**: Priority-based announcements with read receipts and notifications
+  - **Member Coordination**: Event scheduling, task assignments, and progress tracking
 
 ### 🎨 Enhanced UI/UX (v2.0)
 
@@ -107,6 +115,8 @@ Our Dapp leverages blockchain technology deployed on the **Scroll Sepolia Testne
 | **Smart Contracts** | Solidity 0.8.26, Scroll Sepolia Testnet |
 | **Styling** | Material UI Theme System, Custom Design Tokens |
 | **Charts** | Recharts 2.15.1 |
+| **Real-Time** | Socket.IO Client 4.8.1, WebSocket Communication |
+| **Testing** | Vitest 3.2.4, Testing Library, Jest DOM |
 | **Deployment** | Vercel, GitHub Actions |
 | **Notifications** | SendGrid Email API |
 
@@ -204,6 +214,43 @@ VITE_SENDGRID_API_KEY=your_sendgrid_key_here
 - **Monitor Activity**: Track contribution history and fund allocation
 - **Manage Chamas**: Contribute to cycles and invite new members
 - **Check Status**: Real-time updates on chama and transaction status
+
+### 💬 Communication Hub Features
+
+#### 🗨️ Real-Time Chat
+- **Instant Messaging**: Send and receive messages in real-time
+- **Member Presence**: See who's online with live status indicators
+- **Message Threading**: Reply to specific messages for organized discussions
+- **Mobile Optimized**: Touch-friendly interface with swipe gestures
+- **Accessibility**: Full screen reader support and keyboard navigation
+
+#### 🗳️ Proposal Voting System
+- **Democratic Decisions**: Create proposals for chama governance
+- **Visual Vote Tracking**: Real-time vote counts with progress bars
+- **Deadline Management**: Set voting deadlines with countdown timers
+- **Results Display**: Transparent results with percentage breakdowns
+- **Creator Controls**: Proposal creation restricted to chama creators
+
+#### 📢 Announcement System
+- **Priority Levels**: Normal, high, and urgent announcement classifications
+- **Read Receipts**: Track which members have read announcements
+- **Rich Content**: Support for formatted text and detailed descriptions
+- **Notification Integration**: Automatic in-app notifications
+- **Broadcast Control**: Creator-only announcement permissions
+
+#### 👥 Member Coordination
+- **Event Scheduling**: Plan chama meetings and activities with date/time pickers
+- **Task Assignments**: Assign responsibilities to specific members
+- **Progress Tracking**: Visual indicators for task completion status
+- **Calendar Integration**: Timeline view of events and deadlines
+- **Member Management**: Role-based access and permissions
+
+#### 🔧 Technical Features
+- **WebSocket Communication**: Real-time updates without page refresh
+- **Mock Server**: Development-ready testing environment
+- **Performance Optimized**: Message virtualization for large conversations
+- **Mobile Responsive**: Adaptive design for all screen sizes
+- **Offline Support**: Graceful handling of connection issues
 
 ---
 
@@ -331,6 +378,17 @@ function contribute(uint256 _chamaId) external payable {
 | `BreadcrumbNavigation` | Navigation context | Auto-generation, icons, responsive |
 | `MetricCard` | Dashboard metrics | Animated counters, trend indicators |
 
+### 💬 Communication Components
+
+| Component | Purpose | Features |
+|-----------|---------|----------|
+| `CommunicationHub` | Main communication interface | Tabbed interface, drawer/embedded modes |
+| `ChatInterface` | Real-time messaging | Message threading, presence indicators, virtualization |
+| `ProposalVoting` | Democratic decision making | Vote tracking, deadline management, results display |
+| `AnnouncementSystem` | Broadcast communications | Priority levels, read receipts, notifications |
+| `MemberCoordination` | Event and task management | Scheduling, assignments, progress tracking |
+| `NotificationCenter` | Notification management | Real-time alerts, read status, filtering |
+
 ### 🎯 Performance Optimizations
 
 - **React.memo**: Prevents unnecessary re-renders
@@ -378,6 +436,11 @@ npm run preview  # Test production build locally
 - ✅ Mobile-responsive navigation
 - ✅ Accessibility improvements
 - ✅ Performance optimizations
+- ✅ Real-time communication hub
+- ✅ Chat system with message threading
+- ✅ Proposal voting interface
+- ✅ Announcement broadcast system
+- ✅ Member coordination tools
 
 ### 🎯 Phase 2 (In Progress 🚧)
 - 🔄 Enhanced on-chain analytics with The Graph

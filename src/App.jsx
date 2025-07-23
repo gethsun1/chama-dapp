@@ -9,35 +9,37 @@ import JoinChama from "./pages/JoinChama";
 import Dashboard from "./pages/Dashboard";
 import Footer from "./components/Footer";
 import AppKitConfig from "./config"; // Initialize AppKit at root level
-import ChatPlaceholder from "./components/ChatPlaceholder"; // Import the ChatPlaceholder
+import { CommunicationProvider } from "./contexts/CommunicationContext";
+import CommunicationHubTest from "./components/communication/CommunicationHubTest";
 
 function App() {
   return (
     <>
       <AppKitConfig /> {/* Initialize AppKit at root level */}
-      <Router>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            minHeight: "100vh",
-          }}
-        >
-          <NavigationBar />
-          <BreadcrumbNavigation />
-          <Box sx={{ flex: 1 }}>
-            <Routes>
-              <Route path="/" element={<LandingPage />} />
-              <Route path="/create-chama" element={<CreateChama />} />
-              <Route path="/join-chama" element={<JoinChama />} />
-              <Route path="/dashboard" element={<Dashboard />} />
-            </Routes>
+      <CommunicationProvider>
+        <Router>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              minHeight: "100vh",
+            }}
+          >
+            <NavigationBar />
+            <BreadcrumbNavigation />
+            <Box sx={{ flex: 1 }}>
+              <Routes>
+                <Route path="/" element={<LandingPage />} />
+                <Route path="/create-chama" element={<CreateChama />} />
+                <Route path="/join-chama" element={<JoinChama />} />
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/test-communication" element={<CommunicationHubTest />} />
+              </Routes>
+            </Box>
+            <Footer />
           </Box>
-          <Footer />
-        </Box>
-      </Router>
-      {/* ChatPlaceholder is rendered globally */}
-      <ChatPlaceholder />
+        </Router>
+      </CommunicationProvider>
     </>
   );
 }

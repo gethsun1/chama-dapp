@@ -28,10 +28,11 @@ import {
   AccountBalance,
   TrendingUp,
   Warning,
+  Chat,
 } from "@mui/icons-material";
 import StatusIndicator from "../components/StatusIndicator";
 
-const ChamaCard = React.memo(({ chama, onContribute }) => {
+const ChamaCard = React.memo(({ chama, onContribute, onOpenCommunication }) => {
   // State to control the share modal visibility
   const [shareModalOpen, setShareModalOpen] = useState(false);
   // State to manage the snackbar for copied link confirmation
@@ -175,12 +176,12 @@ const ChamaCard = React.memo(({ chama, onContribute }) => {
             </Grid>
 
             {/* Action Buttons */}
-            <Box sx={{ display: "flex", gap: 1, pt: 1 }}>
+            <Box sx={{ display: "flex", gap: 1, pt: 1, flexWrap: "wrap" }}>
               <Button
                 variant="contained"
                 color="primary"
                 onClick={handleContribute}
-                sx={{ flex: 1 }}
+                sx={{ flex: 1, minWidth: "120px" }}
                 startIcon={<TrendingUp />}
               >
                 Contribute
@@ -189,11 +190,22 @@ const ChamaCard = React.memo(({ chama, onContribute }) => {
                 variant="outlined"
                 color="secondary"
                 onClick={handleOpenShareModal}
-                sx={{ flex: 1 }}
+                sx={{ flex: 1, minWidth: "120px" }}
                 startIcon={<Email />}
               >
                 Invite Members
               </Button>
+              {onOpenCommunication && (
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  onClick={onOpenCommunication}
+                  sx={{ flex: 1, minWidth: "120px" }}
+                  startIcon={<Chat />}
+                >
+                  Communication
+                </Button>
+              )}
             </Box>
           </Stack>
         </CardContent>

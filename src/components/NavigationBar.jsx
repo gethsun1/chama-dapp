@@ -32,6 +32,7 @@ import { Link, useLocation } from "react-router-dom";
 import ConnectButton from "../ConnectButton";
 import { useAppKitAccount } from '@reown/appkit/react';
 import heroLogo from "../assets/hero-logo.svg";
+import NotificationCenter from "./communication/NotificationCenter";
 
 const NavigationBar = () => {
   const theme = useTheme();
@@ -107,10 +108,11 @@ const NavigationBar = () => {
           </Stack>
         )}
 
-        {/* Connect Button */}
-        <Box>
+        {/* Notifications and Connect Button */}
+        <Stack direction="row" spacing={1} alignItems="center">
+          {isConnected && <NotificationCenter />}
           <ConnectButton />
-        </Box>
+        </Stack>
 
         {/* Mobile Menu Button */}
         {isMobile && (
