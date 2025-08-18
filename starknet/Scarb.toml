@@ -1,0 +1,27 @@
+[package]
+name = "chama_starknet"
+version = "0.1.0"
+edition = "2023_10"
+
+[dependencies]
+starknet = ">=2.6.0"
+
+[dev-dependencies]
+snforge_std = ">=0.22.0"
+
+# Enable Sierra/CASM generation and Starknet contract target
+[lib]
+sierra = true
+casm = true
+
+[[target.starknet-contract]]
+# Build all cairo contracts in this package
+
+[cairo]
+sierra-replace-ids = true
+
+[tool.snforge]
+# Configure Starknet Foundry tests (snforge)
+
+tests = true
+

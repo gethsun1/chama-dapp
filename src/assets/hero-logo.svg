@@ -1,0 +1,43 @@
+<svg 
+  width="100%" 
+  height="100%" 
+  viewBox="0 0 520 156"
+  preserveAspectRatio="xMidYMid meet"
+  xmlns="http://www.w3.org/2000/svg">
+  
+  <!-- Black background -->
+  <rect width="100%" height="100%" fill="black"/>
+  
+  <!-- Shadow layer -->
+  <text
+    x="52%" y="56%"
+    dominant-baseline="middle"
+    text-anchor="middle"
+    font-family="Lobster, cursive"
+    font-size="73"
+    fill="none"
+    stroke="#ff4444"
+    stroke-width="10.4"
+    stroke-linejoin="round">
+    Chama Dapp
+  </text>
+  
+  <!-- Main text -->
+  <text
+    x="50%" y="50%"
+    dominant-baseline="middle"
+    text-anchor="middle"
+    font-family="Lobster, cursive"
+    font-size="73"
+    fill="white"
+    stroke="#ffffff"
+    stroke-width="5.2"
+    filter="url(#dropShadow)">
+    Chama Dapp
+  </text>
+  
+  <!-- Shadow filter -->
+  <filter id="dropShadow">
+    <feDropShadow dx="2.6" dy="3.9" stdDeviation="2.6" flood-opacity="0.8"/>
+  </filter>
+</svg>
