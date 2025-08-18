@@ -44,15 +44,15 @@ What’s in this repo now:
   - RPC config: `starknet/snfoundry.toml` (RPC v0.8)
 - Declarations on Starknet Sepolia (Accepted on L2):
   - ChamaCore class hash: `0x0798c17a478bf9786e6d42e87b406a3fe13566d50fd3bcbd6d9bfdd29fa6a98a`
-  - ChamaFactory class hash: `0x038d4c6f97ec331b19a570a9b02ddd47841d0f63065cf572cbbb3af5c52c05bf`
+  - ChamaFactory class hash: `0x064345390d13dfa59a9be1606f4cd96d1095b6795a33570f55d577a34fa5d8aa`
   - ChamaVault class hash: `0x01f42b0f0a1ea41f90d35a3a134633797aeaf173cd13a45466c42e60ec9092b5`
 - Deployment on Starknet Sepolia:
-  - ChamaFactory deployed at: `0x013a4210e9db58c72a3506629455333dec9544dd27208ec49bbb98670409ed14`
-  - Explorer: https://sepolia.starkscan.co/contract/0x013a4210e9db58c72a3506629455333dec9544dd27208ec49bbb98670409ed14
+  - ChamaFactory deployed at: `0x054a4299170e89bdd10e63aa1558ded3f9237fd4ff01795fec0f0f4ee54ad8c3`
+  - Explorer: https://sepolia.starkscan.co/contract/0x054a4299170e89bdd10e63aa1558ded3f9237fd4ff01795fec0f0f4ee54ad8c3
 
 Frontend updates for Starknet:
 - Added a minimal network toggle (EVM vs Starknet) in the Navigation Bar
-- Added a Starknet Read‑Only panel on “Join Chama” to query `Factory.get_chama(id)` via starknet.js
+- Added a Starknet Read‑Only panel on “Join Chama” to query `Factory.get_chama(id)` and `get_vault(id)` via starknet.js
 - Added “Starknet Coming Soon” notices on Create/Join pages (writes will come after UDC wiring)
 - Config file: `src/contracts/StarknetFactoryConfig.js` (RPC URL, factory address, class hashes)
 
@@ -66,11 +66,15 @@ Starknet developer quickstart:
   - `sncast -p default -a chama-dev declare -c ChamaCore --package chama_starknet`
   - `sncast -p default -a chama-dev declare -c ChamaFactory --package chama_starknet`
   - `sncast -p default -a chama-dev declare -c ChamaVault --package chama_starknet`
-- Deploy Factory (admin = your account address, core_class = ChamaCore class hash)
-  - `sncast -p default -a chama-dev deploy --class-hash <factory_hash> --constructor-calldata <admin_addr> <core_class_hash>`
+- Deploy Factory (admin, core_class_hash, vault_class_hash)
+  - `sncast -p default -a chama-dev deploy --class-hash 0x64345390d13dfa59a9be1606f4cd96d1095b6795a33570f55d577a34fa5d8aa --constructor-calldata <admin_addr> 0x798c17a478bf9786e6d42e87b406a3fe13566d50fd3bcbd6d9bfdd29fa6a98a 0x1f42b0f0a1ea41f90d35a3a134633797aeaf173cd13a45466c42e60ec9092b5`
+- Create a Chama via UDC (spawns Core + Vault)
+  - `sncast -p default -a chama-dev invoke --contract-address 0x054a4299170e89bdd10e63aa1558ded3f9237fd4ff01795fec0f0f4ee54ad8c3 --function create_chama_udc --calldata <token_addr> <dep_low> <dep_high> <cont_low> <cont_high> <pen_bps> <max_members> <cycle_secs>`
+- Read back addresses
+  - `sncast -p default -a chama-dev call --contract-address 0x054a4299170e89bdd10e63aa1558ded3f9237fd4ff01795fec0f0f4ee54ad8c3 --function get_chama --calldata 1`
+  - `sncast -p default -a chama-dev call --contract-address 0x054a4299170e89bdd10e63aa1558ded3f9237fd4ff01795fec0f0f4ee54ad8c3 --function get_vault --calldata 1`
 
 Next Starknet milestones:
-- UDC deployment inside Factory (spawn Core + Vault, store addresses)
 - Token flows with vault (approve/transferFrom) and payouts
 - Wallet integration (Argent X / Braavos) and starknet.js state wiring
 - Indexing (Apibara) and event schemas

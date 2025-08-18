@@ -10,6 +10,7 @@ import { useAppKitProvider, useAppKitAccount } from "@reown/appkit/react";
 import { useNavigate } from "react-router-dom";
 import { ChamaFactoryABI, contractAddress } from "../contracts/ChamaFactoryConfig";
 import StarknetReadOnlyPanel from "../components/StarknetReadOnlyPanel";
+import RecentStarknetChamas from "../components/RecentStarknetChamas";
 
 // Helper function for safe conversion
 const safeConvert = (val) => {
@@ -123,7 +124,7 @@ const JoinChama = () => {
       await tx.wait();
       console.log("[TX CONFIRMED]");
       handleClose();
-      
+
       // Redirect to Dashboard after successful join
       navigate("/dashboard");
     } catch (error) {
@@ -182,13 +183,18 @@ const JoinChama = () => {
         <StarknetReadOnlyPanel />
       </Box>
 
+      {/* Recent Starknet Chamas */}
+      <Box sx={{ mb: 4 }}>
+        <RecentStarknetChamas />
+      </Box>
+
       {/* Coming soon notice for Starknet */}
       <Box sx={{ mt: 2, mb: 4, p: 2, borderRadius: 2, bgcolor: 'warning.50', border: 1, borderColor: 'warning.main' }}>
         <Typography variant="body2" color="text.primary">
           Starknet support: Coming soon. Current Join Chama flow targets Scroll Sepolia (EVM).
         </Typography>
       </Box>
-      
+
       <Grid container spacing={4}>
         {chamas.map((chama, index) => (
           <Grid item xs={12} sm={6} md={4} key={index}>
