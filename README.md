@@ -215,7 +215,14 @@ npm run preview
 
 Create a `.env.local` file for environment variables:
 ```env
+# Reown AppKit
 VITE_REOWN_PROJECT_ID=your_project_id_here
+
+# Starknet frontend config (optional overrides)
+VITE_STARKNET_RPC_URL=https://starknet-sepolia.public.blastapi.io/rpc/v0_8
+VITE_STARKNET_FACTORY_ADDRESS=0x054a4299170e89bdd10e63aa1558ded3f9237fd4ff01795fec0f0f4ee54ad8c3
+
+# If you use the Vercel function for SendGrid notifications
 VITE_SENDGRID_API_KEY=your_sendgrid_key_here
 ```
 

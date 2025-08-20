@@ -11,6 +11,7 @@ import { useNavigate } from "react-router-dom";
 import { ChamaFactoryABI, contractAddress } from "../contracts/ChamaFactoryConfig";
 import StarknetReadOnlyPanel from "../components/StarknetReadOnlyPanel";
 import RecentStarknetChamas from "../components/RecentStarknetChamas";
+import { useNetwork, Networks } from "../contexts/NetworkContext";
 
 // Helper function for safe conversion
 const safeConvert = (val) => {
@@ -66,6 +67,7 @@ const JoinChama = () => {
   const { walletProvider } = useAppKitProvider("eip155");
   const { isConnected, address } = useAppKitAccount();
   const navigate = useNavigate();
+  const { selected } = useNetwork();
 
   useEffect(() => {
     // If wallet is not connected, stop loading and prompt user
@@ -178,22 +180,26 @@ const JoinChama = () => {
         </Card>
       </Box>
 
-      {/* Starknet read-only panel */}
-      <Box sx={{ mb: 4 }}>
-        <StarknetReadOnlyPanel />
-      </Box>
+      {selected === Networks.STARKNET && (
+        <>
+          {/* Starknet read-only panel */}
+          <Box sx={{ mb: 4 }}>
+            <StarknetReadOnlyPanel />
+          </Box>
 
-      {/* Recent Starknet Chamas */}
-      <Box sx={{ mb: 4 }}>
-        <RecentStarknetChamas />
-      </Box>
+          {/* Recent Starknet Chamas */}
+          <Box sx={{ mb: 4 }}>
+            <RecentStarknetChamas />
+          </Box>
 
-      {/* Coming soon notice for Starknet */}
-      <Box sx={{ mt: 2, mb: 4, p: 2, borderRadius: 2, bgcolor: 'warning.50', border: 1, borderColor: 'warning.main' }}>
-        <Typography variant="body2" color="text.primary">
-          Starknet support: Coming soon. Current Join Chama flow targets Scroll Sepolia (EVM).
-        </Typography>
-      </Box>
+          {/* Coming soon notice for Starknet */}
+          <Box sx={{ mt: 2, mb: 4, p: 2, borderRadius: 2, bgcolor: 'warning.50', border: 1, borderColor: 'warning.main' }}>
+            <Typography variant="body2" color="text.primary">
+              Starknet support: Coming soon. Current Join Chama flow targets Scroll Sepolia (EVM).
+            </Typography>
+          </Box>
+        </>
+      )}
 
       <Grid container spacing={4}>
         {chamas.map((chama, index) => (

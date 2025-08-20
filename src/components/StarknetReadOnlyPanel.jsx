@@ -1,8 +1,9 @@
 // src/components/StarknetReadOnlyPanel.jsx
 import React, { useMemo, useState } from 'react';
-import { Box, Button, Divider, Stack, TextField, Typography } from '@mui/material';
+import { Box, Button, Divider, Link, Stack, TextField, Typography } from '@mui/material';
 import { RpcProvider, Contract } from 'starknet';
 import { STARKNET_NETWORK } from '../contracts/StarknetFactoryConfig';
+import { shortAddr, explorerContractUrl } from '../utils/starknet';
 
 // Minimal ABI for read-only get_chama(id) -> address and get_vault(id) -> address
 const factoryAbi = [
@@ -25,18 +26,24 @@ const factoryAbi = [
 export default function StarknetReadOnlyPanel() {
   const provider = useMemo(() => new RpcProvider({ nodeUrl: STARKNET_NETWORK.rpcUrl }), []);
   const [id, setId] = useState('1');
-  const [result, setResult] = useState('');
+  const [core, setCore] = useState('');
+  const [vault, setVault] = useState('');
+  const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
   const handleQuery = async () => {
     try {
       setLoading(true);
+      setError('');
       const contract = new Contract(factoryAbi, STARKNET_NETWORK.factoryAddress, provider);
-      const core = await contract.get_chama(id);
-      const vault = await contract.get_vault(id);
-      setResult(JSON.stringify({ core, vault }, null, 2));
+      const coreRes = await contract.get_chama(id);
+      const vaultRes = await contract.get_vault(id);
+      setCore(String(coreRes));
+      setVault(String(vaultRes));
     } catch (e) {
-      setResult(`Error: ${e.message || String(e)}`);
+      setError(e.message || String(e));
+      setCore('');
+      setVault('');
     } finally {
       setLoading(false);
     }
@@ -55,7 +62,22 @@ export default function StarknetReadOnlyPanel() {
         </Button>
       </Stack>
       <Divider sx={{ my: 2 }} />
-      <Typography variant="caption" sx={{ whiteSpace: 'pre-wrap' }}>{result || 'No result yet.'}</Typography>
+      {error ? (
+        <Typography variant="caption" color="error">{error}</Typography>
+      ) : (
+        <Stack spacing={1}>
+          <Typography variant="caption">Core: {core ? (
+            <Link href={explorerContractUrl(core)} target="_blank" rel="noopener">
+              {shortAddr(core)}
+            </Link>
+          ) : '—'}</Typography>
+          <Typography variant="caption">Vault: {vault ? (
+            <Link href={explorerContractUrl(vault)} target="_blank" rel="noopener">
+              {shortAddr(vault)}
+            </Link>
+          ) : '—'}</Typography>
+        </Stack>
+      )}
     </Box>
   );
 }

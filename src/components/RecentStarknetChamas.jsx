@@ -1,8 +1,9 @@
 // src/components/RecentStarknetChamas.jsx
 import React, { useEffect, useMemo, useState } from 'react';
-import { Box, Card, CardContent, Grid, TextField, Typography } from '@mui/material';
+import { Box, Card, CardContent, Grid, Link, TextField, Typography } from '@mui/material';
 import { RpcProvider, Contract } from 'starknet';
 import { STARKNET_NETWORK } from '../contracts/StarknetFactoryConfig';
+import { shortAddr, explorerContractUrl } from '../utils/starknet';
 
 const factoryAbi = [
   {
@@ -68,8 +69,16 @@ export default function RecentStarknetChamas() {
             <Card variant="outlined">
               <CardContent>
                 <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>Chama #{it.id}</Typography>
-                <Typography variant="caption" sx={{ display: 'block' }}>Core: {it.core}</Typography>
-                <Typography variant="caption" sx={{ display: 'block' }}>Vault: {it.vault}</Typography>
+                <Typography variant="caption" sx={{ display: 'block' }}>
+                  Core: {it.core !== '0x0' ? (
+                    <Link href={explorerContractUrl(it.core)} target="_blank" rel="noopener">{shortAddr(it.core)}</Link>
+                  ) : '—'}
+                </Typography>
+                <Typography variant="caption" sx={{ display: 'block' }}>
+                  Vault: {it.vault !== '0x0' ? (
+                    <Link href={explorerContractUrl(it.vault)} target="_blank" rel="noopener">{shortAddr(it.vault)}</Link>
+                  ) : '—'}
+                </Typography>
               </CardContent>
             </Card>
           </Grid>

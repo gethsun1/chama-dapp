@@ -12,36 +12,39 @@ import AppKitConfig from "./config"; // Initialize AppKit at root level
 import { CommunicationProvider } from "./contexts/CommunicationContext";
 import CommunicationHubTest from "./components/communication/CommunicationHubTest";
 import { NetworkProvider } from "./contexts/NetworkContext";
+import { StarknetWalletProvider } from "./contexts/StarknetWalletContext";
 
 function App() {
   return (
     <>
       <AppKitConfig /> {/* Initialize AppKit at root level */}
       <NetworkProvider>
-        <CommunicationProvider>
-          <Router>
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                minHeight: "100vh",
-              }}
-            >
-              <NavigationBar />
-              <BreadcrumbNavigation />
-              <Box sx={{ flex: 1 }}>
-                <Routes>
-                  <Route path="/" element={<LandingPage />} />
-                  <Route path="/create-chama" element={<CreateChama />} />
-                  <Route path="/join-chama" element={<JoinChama />} />
-                  <Route path="/dashboard" element={<Dashboard />} />
-                  <Route path="/test-communication" element={<CommunicationHubTest />} />
-                </Routes>
+        <StarknetWalletProvider>
+          <CommunicationProvider>
+            <Router>
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  minHeight: "100vh",
+                }}
+              >
+                <NavigationBar />
+                <BreadcrumbNavigation />
+                <Box sx={{ flex: 1 }}>
+                  <Routes>
+                    <Route path="/" element={<LandingPage />} />
+                    <Route path="/create-chama" element={<CreateChama />} />
+                    <Route path="/join-chama" element={<JoinChama />} />
+                    <Route path="/dashboard" element={<Dashboard />} />
+                    <Route path="/test-communication" element={<CommunicationHubTest />} />
+                  </Routes>
+                </Box>
+                <Footer />
               </Box>
-              <Footer />
-            </Box>
-          </Router>
-        </CommunicationProvider>
+            </Router>
+          </CommunicationProvider>
+        </StarknetWalletProvider>
       </NetworkProvider>
     </>
   );

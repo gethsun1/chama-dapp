@@ -3,7 +3,12 @@ import { createAppKit } from '@reown/appkit/react';
 import { EthersAdapter } from '@reown/appkit-adapter-ethers';
 import { scrollSepolia, scroll } from '@reown/appkit/networks';
 
-const projectId = '3268c03bffd8e52c1b26452048d2ce4c';
+// Prefer environment variable, fall back to current public projectId to avoid breaking dev
+const projectId = import.meta.env.VITE_REOWN_PROJECT_ID || '3268c03bffd8e52c1b26452048d2ce4c';
+if (!import.meta.env.VITE_REOWN_PROJECT_ID) {
+  // eslint-disable-next-line no-console
+  console.warn('VITE_REOWN_PROJECT_ID is not set. Using bundled fallback projectId.');
+}
 const networks = [scrollSepolia, scroll];
 
 const metadata = {
@@ -28,8 +33,6 @@ createAppKit({
   },
 });
 
-
-export default function AppKitConfig(){
-
+export default function AppKitConfig() {
   return null;
 }
