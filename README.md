@@ -150,7 +150,7 @@ Next Starknet milestones:
 
 ## 🌐 Live Application
 
-**🚀 Experience Chama Dapp:** [https://chama-dapp.vercel.app/](https://chama-dapp.vercel.app/)
+**🚀 Experience Chama Dapp:** [https://chama-dapp.vercel.app/](chama-dapp-ten.vercel.app)
 
 ---
 
