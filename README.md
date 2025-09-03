@@ -549,7 +549,7 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 
 ## 📞 Support & Contact
 
-- **Developer**: Gethsun Kahinga
+- **Developer**: Gethsun Misesi
 - **Email**: [gethsun09@gmail.com](mailto:gethsun09@gmail.com)
 - **GitHub**: [@gethsun1](https://github.com/gethsun1)
 - **Issues**: [GitHub Issues](https://github.com/gethsun1/chama-dapp/issues)
