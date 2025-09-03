@@ -34,14 +34,20 @@ import { useAppKitAccount } from '@reown/appkit/react';
 import heroLogo from "../assets/hero-logo.svg";
 import NotificationCenter from "./communication/NotificationCenter";
 import { useNetwork, Networks } from "../contexts/NetworkContext";
+import { useStarknetWallet } from "../contexts/StarknetWalletContext";
 
 const NavigationBar = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const { isConnected, address } = useAppKitAccount();
+  const { isConnected: evmConnected, address: evmAddress } = useAppKitAccount();
+  const { isConnected: starknetConnected, address: starknetAddress } = useStarknetWallet();
   const location = useLocation();
   const { selected, setSelected } = useNetwork();
+
+  // Determine current connection state based on selected network
+  const isConnected = selected === Networks.STARKNET ? starknetConnected : evmConnected;
+  const address = selected === Networks.STARKNET ? starknetAddress : evmAddress;
 
   const toggleDrawer = (open) => () => {
     setDrawerOpen(open);
@@ -112,21 +118,33 @@ const NavigationBar = () => {
 
         {/* Network Toggle, Notifications and Connect Button */}
         <Stack direction="row" spacing={1} alignItems="center">
-          {/* Simple network toggle bound to context */}
+          {/* Enhanced network toggle with connection status */}
           <Chip
-            label="EVM"
+            label={`EVM${evmConnected ? ' ✓' : ''}`}
             size="small"
-            color={selected === Networks.EVM_SCROLL ? 'primary' : 'default'}
+            color={selected === Networks.EVM_SCROLL ? 'primary' : evmConnected ? 'success' : 'default'}
             variant={selected === Networks.EVM_SCROLL ? 'filled' : 'outlined'}
-            sx={{ cursor: 'pointer' }}
+            sx={{ 
+              cursor: 'pointer',
+              '&:hover': {
+                backgroundColor: selected === Networks.EVM_SCROLL ? 'primary.main' : evmConnected ? 'success.main' : 'default',
+                color: selected === Networks.EVM_SCROLL ? 'white' : evmConnected ? 'white' : 'default'
+              }
+            }}
             onClick={() => setSelected(Networks.EVM_SCROLL)}
           />
           <Chip
-            label="Starknet"
+            label={`Starknet${starknetConnected ? ' ✓' : ''}`}
             size="small"
-            color={selected === Networks.STARKNET ? 'primary' : 'default'}
+            color={selected === Networks.STARKNET ? 'primary' : starknetConnected ? 'success' : 'default'}
             variant={selected === Networks.STARKNET ? 'filled' : 'outlined'}
-            sx={{ cursor: 'pointer' }}
+            sx={{ 
+              cursor: 'pointer',
+              '&:hover': {
+                backgroundColor: selected === Networks.STARKNET ? 'primary.main' : starknetConnected ? 'success.main' : 'default',
+                color: selected === Networks.STARKNET ? 'white' : starknetConnected ? 'white' : 'default'
+              }
+            }}
             onClick={() => setSelected(Networks.STARKNET)}
           />
           {isConnected && <NotificationCenter />}
@@ -195,6 +213,13 @@ const NavigationBar = () => {
                     color="success"
                     variant="outlined"
                     sx={{ width: '100%' }}
+                  />
+                  <Chip
+                    label={selected === Networks.STARKNET ? 'Starknet' : 'EVM'}
+                    size="small"
+                    color="primary"
+                    variant="outlined"
+                    sx={{ width: '100%', mt: 1 }}
                   />
                 </Box>
                 <Divider />
