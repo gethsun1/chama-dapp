@@ -17,6 +17,8 @@ import {
   NetworkCheck,
 } from '@mui/icons-material';
 import { useAppKitAccount, useAppKitNetwork } from '@reown/appkit/react';
+import { useStarknetWallet } from '../contexts/StarknetWalletContext';
+import { useNetwork, Networks } from '../contexts/NetworkContext';
 import ConnectButton from '../ConnectButton';
 
 const WalletConnectionGuard = ({ 
@@ -25,12 +27,28 @@ const WalletConnectionGuard = ({
   showNetworkWarning = true,
   customMessage = null 
 }) => {
-  const { isConnected, address } = useAppKitAccount();
+  const { isConnected: evmConnected, address: evmAddress } = useAppKitAccount();
   const { caipNetwork } = useAppKitNetwork();
+  const { isConnected: starknetConnected, address: starknetAddress } = useStarknetWallet();
+  const { selected } = useNetwork();
 
-  // Check if connected to Scroll Sepolia (chainId: 534351)
-  const isCorrectNetwork = caipNetwork?.id === '534351' || caipNetwork?.id === 534351;
-  const networkName = caipNetwork?.name || 'Unknown Network';
+  // Determine current connection state based on selected network
+  const isConnected = selected === Networks.STARKNET ? starknetConnected : evmConnected;
+  const address = selected === Networks.STARKNET ? starknetAddress : evmAddress;
+
+  // Check if connected to correct network based on selection
+  let isCorrectNetwork = false;
+  let networkName = 'Unknown Network';
+  
+  if (selected === Networks.EVM_SCROLL) {
+    // Check if connected to Scroll Sepolia (chainId: 534351)
+    isCorrectNetwork = caipNetwork?.id === '534351' || caipNetwork?.id === 534351;
+    networkName = caipNetwork?.name || 'Unknown Network';
+  } else if (selected === Networks.STARKNET) {
+    // For Starknet, we consider it correct if connected (Starknet wallets auto-detect network)
+    isCorrectNetwork = starknetConnected;
+    networkName = 'Starknet Sepolia';
+  }
 
   // If wallet is connected and network is correct (or network check is disabled), render children
   if (isConnected && (!requireNetwork || isCorrectNetwork)) {
@@ -52,11 +70,11 @@ const WalletConnectionGuard = ({
               }} 
             />
             <Typography variant="h4" gutterBottom color="text.primary">
-              Connect Your Wallet
+              Connect Your {selected === Networks.STARKNET ? 'Starknet' : 'EVM'} Wallet
             </Typography>
             <Typography variant="body1" color="text.secondary" sx={{ mb: 4, maxWidth: 500, mx: 'auto' }}>
               {customMessage || 
-                'To access this feature, please connect your wallet. We support all major Ethereum wallets and ensure your security through decentralized authentication.'
+                `To access this feature, please connect your ${selected === Networks.STARKNET ? 'Starknet' : 'EVM'} wallet. We support ${selected === Networks.STARKNET ? 'Argent X and Braavos' : 'all major Ethereum wallets'} and ensure your security through decentralized authentication.`
               }
             </Typography>
             
@@ -65,20 +83,14 @@ const WalletConnectionGuard = ({
               
               <Box sx={{ mt: 3 }}>
                 <Typography variant="body2" color="text.secondary" gutterBottom>
-                  Supported Networks:
+                  Selected Network:
                 </Typography>
                 <Stack direction="row" spacing={1} justifyContent="center">
                   <Chip 
-                    label="Scroll Sepolia" 
+                    label={selected === Networks.STARKNET ? 'Starknet Sepolia' : 'Scroll Sepolia'} 
                     size="small" 
                     color="primary" 
-                    variant="outlined" 
-                  />
-                  <Chip 
-                    label="Scroll Mainnet" 
-                    size="small" 
-                    color="primary" 
-                    variant="outlined" 
+                    variant="filled" 
                   />
                 </Stack>
               </Box>
@@ -104,30 +116,20 @@ const WalletConnectionGuard = ({
               }} 
             />
             <Typography variant="h4" gutterBottom color="text.primary">
-              Wrong Network
+              Wrong Network Detected
             </Typography>
-            <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
-              You're currently connected to <strong>{networkName}</strong>. 
-              Please switch to Scroll Sepolia to use this application.
+            <Typography variant="body1" color="text.secondary" sx={{ mb: 4, maxWidth: 500, mx: 'auto' }}>
+              {selected === Networks.STARKNET 
+                ? 'Please connect to Starknet Sepolia network to continue.'
+                : 'Please switch to Scroll Sepolia network to continue.'
+              }
             </Typography>
             
-            <Alert severity="info" sx={{ mb: 4, textAlign: 'left' }}>
-              <Typography variant="body2">
-                <strong>How to switch networks:</strong>
-              </Typography>
-              <Typography variant="body2" component="div" sx={{ mt: 1 }}>
-                1. Open your wallet (MetaMask, etc.)<br/>
-                2. Click on the network dropdown<br/>
-                3. Select "Scroll Sepolia" or add it manually<br/>
-                4. Refresh this page
-              </Typography>
-            </Alert>
-
-            <Stack spacing={2} alignItems="center">
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                <NetworkCheck color="primary" />
+            <Stack spacing={3} alignItems="center">
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                <NetworkCheck color="warning" />
                 <Typography variant="body2" color="text.secondary">
-                  Connected to: <Chip label={networkName} size="small" color="warning" />
+                  Current: {networkName}
                 </Typography>
               </Box>
               
@@ -136,19 +138,12 @@ const WalletConnectionGuard = ({
                   Required Network:
                 </Typography>
                 <Chip 
-                  label="Scroll Sepolia (Chain ID: 534351)" 
+                  label={selected === Networks.STARKNET ? 'Starknet Sepolia' : 'Scroll Sepolia'} 
                   size="small" 
-                  color="primary" 
+                  color="success" 
+                  variant="outlined" 
                 />
               </Box>
-              
-              <Button 
-                variant="outlined" 
-                onClick={() => window.location.reload()}
-                sx={{ mt: 2 }}
-              >
-                Refresh Page
-              </Button>
             </Stack>
           </CardContent>
         </Card>
