@@ -1,0 +1,6 @@
+name: Security
+on: [push, pull_request]
+
+jobs:
+  scan:
+    uses: gethsun1/.github/.github/workflows/security.yml@main
